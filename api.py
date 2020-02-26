@@ -101,12 +101,9 @@ def tobs():
     return jsonify(all_tobs)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 @app.route("/api/v1.0/<start>")
-def start(start_date):
+def date_(start):
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
@@ -119,28 +116,26 @@ def start(start_date):
     session.close()
 
     # Convert list of tuples into normal list
-    all_start = list(np.ravel(results4))
+    # all_start = list(np.ravel(results4))
 
-    return jsonify(all_start)
+    return jsonify(results4)
 
 
-@app.route("/api/v1.0//<start>/<end>")
-def start_end():
+@app.route("/api/v1.0/<start>/<end>")
+def start_end(start, end):
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
     """Returns start"""
     # Query
     results5 = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
+        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
 
 
     session.close()
 
-    # Convert list of tuples into normal list
-    all_start_end = list(np.ravel(results5))
 
-    return jsonify(all_start_end)
+    return jsonify(results5)
 
 
 
